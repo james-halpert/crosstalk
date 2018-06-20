@@ -1,0 +1,5 @@
+Create a calculator that meets the following criteria:
+
+1. Allows for user input
+2. provides basic math functions (add, subtract, multiply and divide)
+3. Runs as a standalone .exe file
