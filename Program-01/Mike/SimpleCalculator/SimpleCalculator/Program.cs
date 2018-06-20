@@ -168,12 +168,111 @@ namespace SimpleCalculator
 
         static void Multiply()
         {
+            string[] input;
+            // Setting the answer to 1 causes an issue when no valid factors are entered.
+            // Answer is displayed as "1" in that instance.
+            float answer = 1;
 
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset);
+            Console.WriteLine("Please enter any number of factors separated by white spaces and then hit enter for product.");
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 1);
+            Console.WriteLine("Any non-numeric characters will be ignored.");
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
+
+            // Obtain an array of strings separated by whitespace.
+            input = Console.ReadLine().Split(' ');
+            
+            foreach(string s in input)
+            {
+                try
+                {
+                    answer *= float.Parse(s);
+                }
+                // System.FormatException is thrown by Float.Parse on non-numeric strings. 
+                // This is a cheap (read: hack) way to deal with that.
+                catch (Exception e)
+                {
+                }
+            }
+
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 3);
+            Console.WriteLine($"The product of those factors is: {answer}");
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 4);
+            Console.WriteLine("Press Enter to continue.");
+            // No need for a blinking cursor to prompt the user to coninue.
+            Console.CursorVisible = false;
+            Console.ReadLine();
+            Console.CursorVisible = true;
+            Console.Clear();
         }
 
         static void Divide()
         {
+            bool invalid = false;
+            float dividend;
+            string[] divisor;
 
+            while (true)
+            {
+
+                Console.Clear();
+                if (invalid)
+                {
+                    Console.SetCursorPosition(_horizontalOffset, _verticalOffset - 1);
+                    Console.WriteLine("Invalid number entered");
+                    invalid = false;
+                }
+                Console.SetCursorPosition(_horizontalOffset, _verticalOffset);
+                Console.WriteLine("Please enter the dividend.");
+                Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 1);
+                Console.WriteLine("Any non-numeric characters will be ignored.");
+                Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
+
+                try
+                {
+                    dividend = float.Parse(Console.ReadLine());
+                    break;
+                }
+                catch (Exception e)
+                {
+                    invalid = true;
+                }
+            }
+
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
+            Console.WriteLine("Please enter in any number of divisors to sequentially divide the dividend by.");
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 3);
+            Console.WriteLine("Any non-numeric characters will be ignored.");
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 4);
+            // Obtain an array of strings separated by whitespace.
+            divisor = Console.ReadLine().Split(' ');
+            
+            foreach(string s in divisor)
+            {
+                try
+                {
+                    // Avoid division by 0.
+                    if(float.Parse(s) != 0)
+                    {
+                        dividend /= float.Parse(s);
+                    }
+                }
+                // System.FormatException is thrown by Float.Parse on non-numeric strings. 
+                // This is a cheap (read: hack) way to deal with that.
+                catch (Exception e)
+                {
+                }
+            }
+
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 5);
+            Console.WriteLine($"The quotient of those divisors is: {dividend}");
+            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 6);
+            Console.WriteLine("Press Enter to continue.");
+            // No need for a blinking cursor to prompt the user to coninue.
+            Console.CursorVisible = false;
+            Console.ReadLine();
+            Console.CursorVisible = true;
+            Console.Clear();
         }
     }
 }
