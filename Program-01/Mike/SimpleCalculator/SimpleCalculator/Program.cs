@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SimpleCalculator
 {
     class Program
     {
+        // Offsets to center our UI methods.
         private static int _horizontalOffset = 65;
         private static int _verticalOffset = 17;
 
@@ -59,53 +61,82 @@ namespace SimpleCalculator
             Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 9);
         }
 
-        static void Add()
+        static void DisplayInputUI(string message)
         {
-            string[] input;
-            float answer = 0;
-
             Console.SetCursorPosition(_horizontalOffset, _verticalOffset);
-            Console.WriteLine("Please enter any number of addends separated by white spaces and then hit enter for sum.");
+            Console.WriteLine(message);
             Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 1);
             Console.WriteLine("Any non-numeric characters will be ignored.");
             Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
+        }
 
-            // Obtain an array of strings separated by whitespace.
-            input = Console.ReadLine().Split(' ');
-            
-            foreach(string s in input)
-            {
-                try
-                {
-                    answer += float.Parse(s);
-                }
-                // System.FormatException is thrown by Float.Parse on non-numeric strings. 
-                // This is a cheap (read: hack) way to deal with that.
-                catch (Exception e)
-                {
-                }
-            }
-
+        static void DisplayAnswerUI(string message, float answer)
+        {
             Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 3);
-            Console.WriteLine($"The sum of those addens is: {answer}");
+            Console.WriteLine($"{message} {answer}");
             Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 4);
             Console.WriteLine("Press Enter to continue.");
+
             // No need for a blinking cursor to prompt the user to coninue.
             Console.CursorVisible = false;
             Console.ReadLine();
             Console.CursorVisible = true;
             Console.Clear();
         }
+
+        static List<float> ParseInput()
+        {
+            List<float> parsedInput = new List<float>();
+
+            // Obtain an array of strings separated by whitespace.
+            string[] input = Console.ReadLine().Split(' ');
+
+            // Iterate through array, parse to float, add to List<float>.
+            if (input.Length != 0)
+            {
+                foreach (string s in input)
+                {
+                    try
+                    {
+                        parsedInput.Add(float.Parse(s));
+                    }
+                    // System.FormatException is thrown by Float.Parse on non-numeric strings.
+                    // This is a cheap (read: hack) way to deal with that.
+                    catch (Exception e)
+                    {
+                    }
+                }
+            }
+            return parsedInput;
+        }
+
+        static void Add()
+        {
+            List<float> input = new List<float>();
+            float answer = 0;
+
+            DisplayInputUI("Please enter any number of addends separated by white spaces and then hit enter for sum.");
+            input = ParseInput();
+
+            foreach(float f in input)
+            {
+                answer += f;
+            }
+
+            DisplayAnswerUI("The sum of those addens is:", answer);
+        }
         
         static void Subtract()
         {
+            // Controls whether we inform user that they entered an invalid minuend.
             bool invalid = false;
+            // Had to look it up hah. It's the number you subtract other numbers form.
             float minuend;
-            string[] subtrahend;
+            List<float> input = new List<float>();
 
+            // Loop until they enter a valid minuend.
             while (true)
             {
-
                 Console.Clear();
                 if (invalid)
                 {
@@ -113,11 +144,8 @@ namespace SimpleCalculator
                     Console.WriteLine("Invalid number entered");
                     invalid = false;
                 }
-                Console.SetCursorPosition(_horizontalOffset, _verticalOffset);
-                Console.WriteLine("Please enter the number to subtract from.");
-                Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 1);
-                Console.WriteLine("Any non-numeric characters will be ignored.");
-                Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
+
+                DisplayInputUI("Please enter the number to subtract from.");
 
                 try
                 {
@@ -130,84 +158,43 @@ namespace SimpleCalculator
                 }
             }
 
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
-            Console.WriteLine("Please enter in any number of numbers to subtract from the first.");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 3);
-            Console.WriteLine("Any non-numeric characters will be ignored.");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 4);
-            // Obtain an array of strings separated by whitespace.
-            subtrahend = Console.ReadLine().Split(' ');
-            
-            foreach(string s in subtrahend)
+            Console.Clear();
+            DisplayInputUI("Please enter in any number of numbers to subtract from the first.");
+            input = ParseInput();
+
+            foreach(float f in input)
             {
-                try
-                {
-                    minuend -= float.Parse(s);
-                }
-                // System.FormatException is thrown by Float.Parse on non-numeric strings. 
-                // This is a cheap (read: hack) way to deal with that.
-                catch (Exception e)
-                {
-                }
+                minuend -= f;
             }
 
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 5);
-            Console.WriteLine($"The difference of those numbers is: {minuend}");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 6);
-            Console.WriteLine("Press Enter to continue.");
-            // No need for a blinking cursor to prompt the user to coninue.
-            Console.CursorVisible = false;
-            Console.ReadLine();
-            Console.CursorVisible = true;
-            Console.Clear();
+            DisplayAnswerUI("The difference of those numbers is:", minuend);
         }
 
         static void Multiply()
         {
-            string[] input;
-            // Setting the answer to 1 causes an issue when no valid factors are entered.
-            // Answer is displayed as "1" in that instance.
+            List<float> input = new List<float>();
+            // Setting the initial answer to 0 would always result in a final answer of 0.
             float answer = 1;
 
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset);
-            Console.WriteLine("Please enter any number of factors separated by white spaces and then hit enter for product.");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 1);
-            Console.WriteLine("Any non-numeric characters will be ignored.");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
+            DisplayInputUI("Please enter any number of factors separated by white spaces and then hit enter for product.");
+            input = ParseInput();
 
-            // Obtain an array of strings separated by whitespace.
-            input = Console.ReadLine().Split(' ');
-            
-            foreach(string s in input)
+            foreach(float f in input)
             {
-                try
-                {
-                    answer *= float.Parse(s);
-                }
-                // System.FormatException is thrown by Float.Parse on non-numeric strings. 
-                // This is a cheap (read: hack) way to deal with that.
-                catch (Exception e)
-                {
-                }
+                answer *= f;
             }
 
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 3);
-            Console.WriteLine($"The product of those factors is: {answer}");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 4);
-            Console.WriteLine("Press Enter to continue.");
-            // No need for a blinking cursor to prompt the user to coninue.
-            Console.CursorVisible = false;
-            Console.ReadLine();
-            Console.CursorVisible = true;
-            Console.Clear();
+            DisplayAnswerUI("The product of those factors is:", answer);
         }
 
         static void Divide()
         {
+            // Controls whether we inform the user that they entered an invalid dividend.
             bool invalid = false;
             float dividend;
-            string[] divisor;
+            List<float> input = new List<float>();
 
+            // Loop until they enter a valid dividend.
             while (true)
             {
 
@@ -224,6 +211,8 @@ namespace SimpleCalculator
                 Console.WriteLine("Any non-numeric characters will be ignored.");
                 Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
 
+                DisplayInputUI("Please enter the dividend.");
+
                 try
                 {
                     dividend = float.Parse(Console.ReadLine());
@@ -235,40 +224,20 @@ namespace SimpleCalculator
                 }
             }
 
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 2);
-            Console.WriteLine("Please enter in any number of divisors to sequentially divide the dividend by.");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 3);
-            Console.WriteLine("Any non-numeric characters will be ignored.");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 4);
-            // Obtain an array of strings separated by whitespace.
-            divisor = Console.ReadLine().Split(' ');
+            Console.Clear();
+            DisplayInputUI("Please enter in any number of divisors to sequentially divide the dividend by.");
+            input = ParseInput();
             
-            foreach(string s in divisor)
+            foreach(float f in input)
             {
-                try
+                // Avoid division by 0.
+                if(f != 0)
                 {
-                    // Avoid division by 0.
-                    if(float.Parse(s) != 0)
-                    {
-                        dividend /= float.Parse(s);
-                    }
-                }
-                // System.FormatException is thrown by Float.Parse on non-numeric strings. 
-                // This is a cheap (read: hack) way to deal with that.
-                catch (Exception e)
-                {
+                    dividend /= f;
                 }
             }
 
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 5);
-            Console.WriteLine($"The quotient of those divisors is: {dividend}");
-            Console.SetCursorPosition(_horizontalOffset, _verticalOffset + 6);
-            Console.WriteLine("Press Enter to continue.");
-            // No need for a blinking cursor to prompt the user to coninue.
-            Console.CursorVisible = false;
-            Console.ReadLine();
-            Console.CursorVisible = true;
-            Console.Clear();
+            DisplayAnswerUI("The quotient of those divisors is:", dividend);
         }
     }
 }
