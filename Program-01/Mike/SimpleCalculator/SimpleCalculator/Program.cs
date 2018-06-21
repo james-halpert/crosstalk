@@ -5,6 +5,7 @@ namespace SimpleCalculator
 {
     class Program
     {
+        // Offsets to center our UI methods.
         private static int _horizontalOffset = 65;
         private static int _verticalOffset = 17;
 
@@ -127,13 +128,15 @@ namespace SimpleCalculator
         
         static void Subtract()
         {
+            // Controls whether we inform user that they entered an invalid minuend.
             bool invalid = false;
+            // Had to look it up hah. It's the number you subtract other numbers form.
             float minuend;
             List<float> input = new List<float>();
 
+            // Loop until they enter a valid minuend.
             while (true)
             {
-
                 Console.Clear();
                 if (invalid)
                 {
@@ -170,8 +173,7 @@ namespace SimpleCalculator
         static void Multiply()
         {
             List<float> input = new List<float>();
-            // Setting the answer to 1 causes an issue when no valid factors are entered.
-            // Answer is displayed as "1" in that instance.
+            // Setting the initial answer to 0 would always result in a final answer of 0.
             float answer = 1;
 
             DisplayInputUI("Please enter any number of factors separated by white spaces and then hit enter for product.");
@@ -187,10 +189,12 @@ namespace SimpleCalculator
 
         static void Divide()
         {
+            // Controls whether we inform the user that they entered an invalid dividend.
             bool invalid = false;
             float dividend;
             List<float> input = new List<float>();
 
+            // Loop until they enter a valid dividend.
             while (true)
             {
 
